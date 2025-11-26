@@ -51,6 +51,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
 .nav-logo {
@@ -62,6 +63,13 @@ body {
 .nav-menu {
   display: flex;
   gap: 2.5rem;
+  z-index: 1001;
+  position: relative;
+}
+
+.nav-menu li {
+  position: relative;
+  z-index: 1001;
 }
 
 .nav-link {
@@ -69,6 +77,9 @@ body {
   color: var(--text-secondary);
   transition: color 0.3s ease;
   position: relative;
+  cursor: pointer;
+  z-index: 1001;
+  pointer-events: auto;
 }
 
 .nav-link::after {
@@ -88,6 +99,41 @@ body {
 
 .nav-link:hover::after {
   width: 100%;
+}
+
+/* Hamburger Menu Toggle */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1002;
+}
+
+.nav-toggle span {
+  width: 100%;
+  height: 2px;
+  background: var(--text-primary);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.nav-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(8px, 8px);
+}
+
+.nav-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
 }
 
 /* Hero Section */
@@ -112,6 +158,16 @@ body {
 
 .hero-text {
   z-index: 2;
+  position: relative;
+}
+
+.hero-text .btn-primary,
+.contact-form .btn-primary {
+  position: relative !important;
+  transform: translateY(0) translateX(0) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-block !important;
 }
 
 .hero-title {
@@ -140,8 +196,12 @@ body {
   color: var(--bg-primary);
   font-weight: 600;
   letter-spacing: 1px;
-  transition: all 0.3s ease;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
   position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
   overflow: hidden;
 }
 
@@ -158,11 +218,17 @@ body {
 }
 
 .btn-primary:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 15px 30px rgba(255, 255, 255, 0.3);
   color: var(--text-primary);
 }
 
 .btn-primary:hover::before {
   left: 0;
+}
+
+.btn-primary:active {
+  transform: translateY(-1px) scale(1.02);
 }
 
 .hero-visual {
@@ -179,6 +245,7 @@ body {
   border: 2px solid var(--border);
   border-radius: 50%;
   position: relative;
+  animation: rotateCircle 25s linear infinite, popOut 2s ease-in-out infinite;
 }
 
 .hero-circle::before {
@@ -191,6 +258,7 @@ body {
   height: 300px;
   border: 1px solid var(--border);
   border-radius: 50%;
+  animation: rotateCircleReverse 15s linear infinite, popOutInner 2.5s ease-in-out infinite;
 }
 
 .hero-circle::after {
@@ -204,6 +272,46 @@ body {
   background: var(--text-primary);
   border-radius: 50%;
   opacity: 0.1;
+}
+
+@keyframes rotateCircle {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotateCircleReverse {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+
+@keyframes popOut {
+  0%, 100% {
+    transform: scale(1);
+    border-width: 2px;
+  }
+  50% {
+    transform: scale(1.08);
+    border-width: 3px;
+  }
+}
+
+@keyframes popOutInner {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    border-width: 1px;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    border-width: 2px;
+  }
 }
 
 .scroll-indicator {
@@ -512,6 +620,12 @@ section {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  position: relative;
+}
+
+.contact-form .btn-primary {
+  position: relative !important;
+  transform: none !important;
 }
 
 .form-group {
@@ -568,13 +682,48 @@ section {
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: flex;
+  }
+
   .nav-menu {
-    gap: 1.5rem;
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 70%;
+    max-width: 300px;
+    height: 100vh;
+    background: var(--bg-primary);
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 6rem 2rem 2rem;
+    gap: 2rem;
+    transition: right 0.3s ease;
+    z-index: 1001;
+    border-left: 1px solid var(--border);
+  }
+
+  .nav-menu.active {
+    right: 0;
   }
 
   .nav-link {
-    font-size: 0.8rem;
+    font-size: 1.1rem;
+    width: 100%;
+    padding: 0.5rem 0;
+  }
+
+  .nav-link::after {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav-menu {
+    width: 80%;
+    max-width: 280px;
   }
 
   .projects-grid {
